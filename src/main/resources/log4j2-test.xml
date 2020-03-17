@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO" strict="true">
+
+    <Appenders>
+        <Console name="STDOUT">
+            <PatternLayout>
+                <pattern>%highlight{[%d{ABSOLUTE}][%t][%p] (%F:%L) - %m}{FATAL=red, ERROR=Bright red,
+                    WARN=yellow,INFO=Green,DEBUG=White,TRACE=Magenta}%n%throwable
+                </pattern>
+            </PatternLayout>
+        </Console>
+
+        <Console name="STD_P6SPY">
+            <PatternLayout>
+                <pattern>[%d{ABSOLUTE}][%t][%p] %magenta{%m}%n</pattern>
+            </PatternLayout>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+
+        <Logger name="p6spy" level="DEBUG" additivity="false">
+            <AppenderRef ref="STD_P6SPY"/>
+        </Logger>
+
+        <Logger name="org.springframework" level="INFO" additivity="false">
+            <AppenderRef ref="STDOUT"/>
+        </Logger>
+
+        <Logger name="com.alibaba.boot" level="INFO" additivity="false">
+            <AppenderRef ref="STDOUT"/>
+        </Logger>
+
+        <Logger name="com.uboxol.cloud" level="DEBUG" additivity="false">
+            <AppenderRef ref="STDOUT"/>
+        </Logger>
+
+        <Logger name="com.uboxol" level="DEBUG" additivity="false">
+            <AppenderRef ref="STDOUT"/>
+        </Logger>
+
+        <Root level="INFO">
+            <AppenderRef ref="STDOUT"/>
+        </Root>
+    </Loggers>
+
+</Configuration>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO" strict="true">
+    <Properties>
+        <Property name="log-dir">/ubox/logs/pandorasbox/app</Property>
+        <Property name="daily-file">${log-dir}/daily.log</Property>
+        <Property name="ex-file">${log-dir}/exceptions.log</Property>
+        <Property name="other-file">${log-dir}/framework.log</Property>
+        <Property name="access-file">${log-dir}/access.log</Property>
+    </Properties>
+
+    <Appenders>
+
+        <RollingFile name="ERROR" fileName="${ex-file}" filePattern="${ex-file}-%d{yyyyMMdd}">
+            <PatternLayout>
+                <pattern>[%d] %X{remoteIp} [%t][%p] %l - %m%n%ex</pattern>
+            </PatternLayout>
+            <Filters>
+                <ThresholdFilter level="FATAL" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="100MB"/>
+            </Policies>
+        </RollingFile>
+
+
+        <RollingFile name="BIZ" fileName="${daily-file}" filePattern="${daily-file}%d{yyyyMMdd}">
+            <PatternLayout>
+                <pattern>[%d] %X{remoteIp} [%t][%p] - %m%n</pattern>
+            </PatternLayout>
+
+            <Filters>
+                <ThresholdFilter level="FATAL" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+        </RollingFile>
+
+        <RollingFile name="OTHER" fileName="${other-file}" filePattern="${other-file}%d{yyyyMMdd}">
+            <PatternLayout>
+                <pattern>[%d] %X{remoteIp} [%p] (%F:%L) - %m%n%throwable</pattern>
+            </PatternLayout>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+        </RollingFile>
+
+        <RollingFile name="ACCESS" fileName="${access-file}" filePattern="${access-file}%d{yyyyMMdd}">
+            <PatternLayout>
+                <pattern>[%d][%X{remoteIp}][%X{requestId}][%t][%p] (%F:%L) - %m%n</pattern>
+            </PatternLayout>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+
+        <Logger name="com.uboxol.cloud.pandorasBox.aop.LogHandlerInterceptor" level="INFO">
+            <AppenderRef ref="ACCESS"/>
+        </Logger>
+
+        <Logger name="com.uboxol.cloud.pandorasBox" level="INFO" additivity="false">
+            <AppenderRef ref="BIZ"/>
+            <AppenderRef ref="ERROR"/>
+        </Logger>
+
+        <Logger name="com.uboxol.zk" level="INFO" additivity="false">
+            <AppenderRef ref="BIZ"/>
+            <AppenderRef ref="ERROR"/>
+        </Logger>
+
+        <Logger name="org.apache.thrift" level="INFO" additivity="false">
+            <AppenderRef ref="BIZ"/>
+            <AppenderRef ref="ERROR"/>
+        </Logger>
+
+        <Root level="WARN">
+            <AppenderRef ref="OTHER"/>
+            <AppenderRef ref="ERROR"/>
+        </Root>
+    </Loggers>
+
+</Configuration>
